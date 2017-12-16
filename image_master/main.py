@@ -4,6 +4,9 @@ import os
 import time
 from readplate import readplate
 
+
+
+
 def Rect(img, rect,box):
     # Let cnt be the contour and img be the input
 
@@ -81,10 +84,29 @@ def density(possible_lic,w,h,x,y):
     return edge_density
 
 
+
+
+def LPdata():
+    arr = []
+    inp = open ("Licenseplates.txt","r")
+    for line in inp.readlines():
+        # add a new sublist
+        arr.append([])
+        # loop over the elemets, split by whitespace
+        for i in line.split():
+            # convert to integer and append to the last
+            # element of the list
+            arr[-1].append(str(i))
+    return arr
+
+
+
+
 def main():
     t1 = time.time()                                        # Take the time when program starts
-    
-    img = cv2.imread("3.jpg")                            # open image
+    Lp = LPdata()
+
+    img = cv2.imread("1.jpg")                            # open image
 
     if img is None:                                         # if image was not read successfully
         print "error: image not read from file \n\n"        # print error message to std out
@@ -119,9 +141,11 @@ def main():
                     license = readplate(plate)                      # Find licence plate number in the contour
                     print "Number plate found: " + license                                   # Print the licence plate number if found
                     
-
+    for text in Lp:
+        if str(license) in text:
+            SGSdata=text
+    print SGSdata
     
-
     ttime=(time.time()-t1)*1000                     # Calculate how long the program took to process the image
     print 'Time taken: %d ms'%(ttime)               # Print how long it took to process the image
     cv2.imshow("Orig", img)                         # Display original image with found contour
