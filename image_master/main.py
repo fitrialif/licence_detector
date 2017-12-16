@@ -106,7 +106,7 @@ def main():
     t1 = time.time()                                        # Take the time when program starts
     Lp = LPdata()
     font = cv2.FONT_HERSHEY_SIMPLEX
-    img = cv2.imread("2.jpg")                            # open image
+    img = cv2.imread("5.jpg")                            # open image
 
     if img is None:                                         # if image was not read successfully
         print "error: image not read from file \n\n"        # print error message to std out
@@ -149,7 +149,6 @@ def main():
     ttime=(time.time()-t1)*1000                     # Calculate how long the program took to process the image
     print 'Time taken: %d ms'%(ttime)               # Print how long it took to process the image
     
-    cv2.putText(img,str(license),(x,y), font, 2,(255,0,0),3,cv2.LINE_AA)
     cv2.namedWindow("Original",cv2.WINDOW_NORMAL)
     cv2.imshow("Original", img)                         # Display original image with found contour
     cv2.waitKey()                                   # Wait for user input
