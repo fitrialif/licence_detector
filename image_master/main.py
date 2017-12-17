@@ -4,9 +4,6 @@ import os
 import time
 from readplate import readplate
 
-
-
-
 def Rect(img, rect,box):
     # Let cnt be the contour and img be the input
 
@@ -21,7 +18,6 @@ def Rect(img, rect,box):
     x2 = max(Xs)
     y1 = min(Ys)
     y2 = max(Ys)
-
 
     angle = rect[2]
     if angle < -45:
@@ -40,8 +36,8 @@ def Rect(img, rect,box):
     Rotatedrect = cv2.getRectSubPix(cropped, (int(croppedW),int(croppedH)), (size[0]/2, size[1]/2))
     return Rotatedrect
 
-
 def img_processing(img):
+
     imgGrayscale = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) 
     str_element_size=(16,4)
     kernel = np.array([[-1,0,1],[-2,0,2],[1,0,1]])
@@ -68,7 +64,6 @@ def img_processing(img):
    
     return sobel, imgBlurred
 
-
 def density(possible_lic,w,h,x,y):
     white_pix=0
     
@@ -83,9 +78,6 @@ def density(possible_lic,w,h,x,y):
     edge_density = float(white_pix)/(plate_possible.shape[0]*plate_possible.shape[1])
     return edge_density
 
-
-
-
 def LPdata():
     arr = []
     inp = open ("Licenseplates.txt","r")
@@ -99,14 +91,11 @@ def LPdata():
             arr[-1].append(str(i))
     return arr
 
-
-
-
 def main():
     t1 = time.time()                                        # Take the time when program starts
     Lp = LPdata()
     font = cv2.FONT_HERSHEY_SIMPLEX
-    img = cv2.imread("5.jpg")                            # open image
+    img = cv2.imread("2.jpg")                            # open image
 
     if img is None:                                         # if image was not read successfully
         print "error: image not read from file \n\n"        # print error message to std out
@@ -139,22 +128,28 @@ def main():
                     cv2.drawContours(img,[box],0,(255,0,0),2)       # Draw contour on the original image
                     license = readplate(plate)                      # Find licence plate number in the contour
                     print "Number plate found: " + license          # Print the licence plate number if found
-                    cv2.putText(img,str(license),(x,y+h+60), font, 2,(0,255,0),3,cv2.LINE_AA)
                     
-    for text in Lp:
-        if str(license) in text:
-            SGSdata=text
-    print SGSdata
+                    for text in Lp:
+                        if str(license) in text:
+                            SGSdata=text
+                            print SGSdata
+                            cv2.putText(img,str(license),(x,y+h+60), font, 2,(0,0,255),3,cv2.LINE_AA)
+                            cv2.putText(img,str(SGSdata[1] +" "+ SGSdata[3]),(-100+x,y+h+100), font, 1,(0,0,255),2,cv2.LINE_AA)
+                            print "Next inspection: " + SGSdata[5]
+
+                    
+
     
     ttime=(time.time()-t1)*1000                     # Calculate how long the program took to process the image
     print 'Time taken: %d ms'%(ttime)               # Print how long it took to process the image
+
     
+    cv2.putText(img,str(license),(x,y), font, 2,(255,0,0),3,cv2.LINE_AA)
     cv2.namedWindow("Original",cv2.WINDOW_NORMAL)
     cv2.imshow("Original", img)                         # Display original image with found contour
     cv2.waitKey()                                   # Wait for user input
     cv2.destroyAllWindows()                         # Close all windows
     return
-
 
 if __name__ == "__main__":
 
