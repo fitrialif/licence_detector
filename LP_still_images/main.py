@@ -95,11 +95,7 @@ def main():
     t1 = time.time()                                        # Take the time when program starts
     Lp = LPdata()
     font = cv2.FONT_HERSHEY_SIMPLEX
-<<<<<<< HEAD:LP_still_images/main.py
     img = cv2.imread("1.jpg")                            # open image
-=======
-    img = cv2.imread("2.jpg")                            # open image
->>>>>>> d5f27aa8eb5236f0ba0ecb1303decf84acd82885:image_master/main.py
 
     if img is None:                                         # if image was not read successfully
         print "error: image not read from file \n\n"        # print error message to std out
@@ -132,7 +128,6 @@ def main():
                     cv2.drawContours(img,[box],0,(255,0,0),2)       # Draw contour on the original image
                     license = readplate(plate)                      # Find licence plate number in the contour
                     print "Number plate found: " + license          # Print the licence plate number if found
-<<<<<<< HEAD:LP_still_images/main.py
                     
                     for text in Lp:
                         if str(license) in text:
@@ -143,28 +138,11 @@ def main():
                             print "Next inspection: " + SGSdata[5]
 
                     
-=======
-                    
-                    for text in Lp:
-                        if str(license) in text:
-                            SGSdata=text
-                            print SGSdata
-                            cv2.putText(img,str(license),(x,y+h+60), font, 2,(0,0,255),3,cv2.LINE_AA)
-                            cv2.putText(img,str(SGSdata[1] +" "+ SGSdata[3]),(-100+x,y+h+100), font, 1,(0,0,255),2,cv2.LINE_AA)
-                            print "Next inspection: " + SGSdata[5]
-
-                    
->>>>>>> d5f27aa8eb5236f0ba0ecb1303decf84acd82885:image_master/main.py
 
     
     ttime=(time.time()-t1)*1000                     # Calculate how long the program took to process the image
     print 'Time taken: %d ms'%(ttime)               # Print how long it took to process the image
 
-<<<<<<< HEAD:LP_still_images/main.py
-=======
-    
-    cv2.putText(img,str(license),(x,y), font, 2,(255,0,0),3,cv2.LINE_AA)
->>>>>>> d5f27aa8eb5236f0ba0ecb1303decf84acd82885:image_master/main.py
     cv2.namedWindow("Original",cv2.WINDOW_NORMAL)
     cv2.imshow("Original", img)                         # Display original image with found contour
     cv2.waitKey()                                   # Wait for user input
