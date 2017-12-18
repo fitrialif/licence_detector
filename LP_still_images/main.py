@@ -92,61 +92,67 @@ def LPdata():
     return arr
 
 def main():
-    t1 = time.time()                                        # Take the time when program starts
-    Lp = LPdata()
-    font = cv2.FONT_HERSHEY_SIMPLEX
-    img = cv2.imread("1.jpg")                            # open image
+    for mynd in range(1,29):
+        t1 = time.time()                                        # Take the time when program starts
+        Lp = LPdata()
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        license = []
+        img = cv2.imread(str(mynd) + ".jpg")                            # open image
 
-    if img is None:                                         # if image was not read successfully
-        print "error: image not read from file \n\n"        # print error message to std out
-        os.system("pause")                                  # pause so user can see error message
-        return                                              # and exit function (which exits program)
+        if img is None:                                         # if image was not read successfully
+            print "error: image not read from file \n\n"        # print error message to std out
+            os.system("pause")                                  # pause so user can see error message
+            return                                              # and exit function (which exits program)
 
-    morphed_sobel, Blurred=img_processing(img)
+        morphed_sobel, Blurred=img_processing(img)
    
-    # Finding contours in image
-    _,contours,_=cv2.findContours(morphed_sobel, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        # Finding contours in image
+        _,contours,_=cv2.findContours(morphed_sobel, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
    
-    w,h,x,y = 0,0,0,0
+        w,h,x,y = 0,0,0,0
     
-    # Taking all countours that were found and looking for text   
-    for contour in contours:
-        area = cv2.contourArea(contour)             # Calculating the area of each contour
+        # Taking all countours that were found and looking for text   
+        for contour in contours:
+            area = cv2.contourArea(contour)             # Calculating the area of each contour
         
-        rect = cv2.minAreaRect(contour)             
-        box = cv2.boxPoints(rect)
-        box = np.int0(box)
+            rect = cv2.minAreaRect(contour)             
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
         
-        # If contour area is within set boundaries it cuts the countour out of the image 
-        if area > 700 and area < 8000:
-            [x,y,w,h] = cv2.boundingRect(contour)       # find x,y coordinates of the corners of the contour
-            if w>4*h and w<6*h:                         # Check if contour is within set aspect ratio of a numberplate
-                crop_img = Blurred[y:y+h,x:x+w]         # Crop contour out of the image
-                edgedensity=density(crop_img,w,h,x,y)   # Find edge density of the contour
-                if edgedensity>0.5:
-                    plate = Rect(img,rect,box)          # Correct the angle of the contour so it is straight
-                    cv2.drawContours(img,[box],0,(255,0,0),2)       # Draw contour on the original image
-                    license = readplate(plate)                      # Find licence plate number in the contour
-                    print "Number plate found: " + license          # Print the licence plate number if found
+            # If contour area is within set boundaries it cuts the countour out of the image 
+            if area > 700 and area < 8000:
+                [x,y,w,h] = cv2.boundingRect(contour)       # find x,y coordinates of the corners of the contour
+                if w>4*h and w<6*h:                         # Check if contour is within set aspect ratio of a numberplate
+                    crop_img = Blurred[y:y+h,x:x+w]         # Crop contour out of the image
+                    edgedensity=density(crop_img,w,h,x,y)   # Find edge density of the contour
+                    if edgedensity>0.5:
+                        plate = Rect(img,rect,box)          # Correct the angle of the contour so it is straight
+                        cv2.drawContours(img,[box],0,(255,0,0),2)       # Draw contour on the original image
+                        license = readplate(plate)                      # Find licence plate number in the contour
+                        print "Number plate found: " + license          # Print the licence plate number if found
                     
-                    for text in Lp:
-                        if str(license) in text:
-                            SGSdata=text
-                            print SGSdata
-                            cv2.putText(img,str(license),(x,y+h+60), font, 2,(0,0,255),3,cv2.LINE_AA)
-                            cv2.putText(img,str(SGSdata[1] +" "+ SGSdata[3]),(x,y+h+100), font, 1,(0,0,255),2,cv2.LINE_AA)
-                            print "Next inspection: " + SGSdata[5]
+                        for text in Lp:
+                            if str(license) in text:
+                                SGSdata=text
+                                print SGSdata
+                                cv2.putText(img,str(license),(x,y+h+60), font, 2,(0,0,255),3,cv2.LINE_AA)
+                                cv2.putText(img,str(SGSdata[1] +" "+ SGSdata[3]),(x,y+h+100), font, 1,(0,0,255),2,cv2.LINE_AA)
+                                print "Next inspection: " + SGSdata[5]
+
+                            if len(license) == 0:
+                                cv2.putText(img,"Error could not read number",(200,200), font, 2,(0,0,255),3,cv2.LINE_AA)
 
                     
 
     
-    ttime=(time.time()-t1)*1000                     # Calculate how long the program took to process the image
-    print 'Time taken: %d ms'%(ttime)               # Print how long it took to process the image
-
-    cv2.namedWindow("Original",cv2.WINDOW_NORMAL)
-    cv2.imshow("Original", img)                         # Display original image with found contour
-    cv2.waitKey()                                   # Wait for user input
-    cv2.destroyAllWindows()                         # Close all windows
+        ttime=(time.time()-t1)*1000                     # Calculate how long the program took to process the image
+        print 'Time taken: %d ms'%(ttime)               # Print how long it took to process the image
+        cv2.imwrite(str(mynd) + "-processeed.jpg",img)
+        cv2.namedWindow("Original",cv2.WINDOW_NORMAL)
+        cv2.imshow("Original", img)                         # Display original image with found contour
+        cv2.waitKey()                                   # Wait for user input
+        cv2.destroyAllWindows()                         # Close all windows
+        del license
     return
 
 if __name__ == "__main__":

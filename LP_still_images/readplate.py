@@ -9,7 +9,8 @@ licenceplate = []
 scaling = 290
 
 def readplate(crop_img):
-    
+    licenceplate = []
+    plate = []
     # Image scaling to have consistent text size
     r = float(scaling) / crop_img.shape[1]
     dim = (int(scaling), int(crop_img.shape[0] * r))
@@ -67,12 +68,15 @@ def readplate(crop_img):
     if len(plate) == 6:     # If the list has 6 letters it is assumed that it has detected the inspection sticker and it is removed
         remove = plate.pop(2)
 
-    licenceplate = []
+    
     for i in range(len(plate)):             # Put all letters in a list to form the number on the numberplate
         licenceplate.append(plate[i][1])
     licenceplate = "".join(licenceplate)
-
+    license = licenceplate
+    del licenceplate
+    del plate
     cv2.imshow('Licence plate contours',crop_img)       # Show original image with marked text contours
        
-    return licenceplate
+    return license
+
 
